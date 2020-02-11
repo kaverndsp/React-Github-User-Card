@@ -1,26 +1,52 @@
 import React from 'react';
-import logo from './logo.svg';
+import axios from "axios";
+import Card from "./components/Card";
+
 import './App.css';
 
-function App() {
+
+
+class App extends React.Component {
+  state={
+    users: [],
+    followers: []
+  }
+  
+  componentDidMount(){
+    axios.get("https://api.github.com/users/kaverndsp")
+    .then( res => {
+      console.log(res);
+      this.setState({
+        users: res.data
+      })
+      console.log(this.state.users)
+    })
+    .catch(err => {
+      console.log("The data could not be returned", err)
+    })
+    axios.get("https://api.github.com/users/kaverndsp/followers")
+    .then(response => {
+      console.log("second call", response);
+      this.setState({
+        followers: response.data
+      })
+      console.log("this is the grabbed data", this.state.followers);
+    })
+    .catch(error => {
+      console.log("The data for followers could not be returned", error)
+    })
+
+  }
+  
+
+  render(){
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Card key={this.state.users.id} data={this.state.users} follower={this.state.followers}/>
+      
+  
     </div>
   );
 }
-
+}
 export default App;
